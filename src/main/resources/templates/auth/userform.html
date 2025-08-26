@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <title>Στοιχεία Χρήστη</title>
+        <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+        <style>
+            .error { color: red; font-size: 0.9em; }
+        </style>
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <h2>Στοιχεία Χρήστη</h2>
+            <!--<form th:action="@{/properties/save}" method="post">-->
+            <form th:action="@{${formAction}}" method="post">
+                 <div th:object="${user}">
+                    <input type="hidden" th:field="*{id}"/>
+                    <div class="mb-3">
+                        <label class="form-label">Επώνυμο</label>
+                        <input type="text" class="form-control" th:field="*{surname}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Όνομα</label>
+                        <input type="text" class="form-control" th:field="*{firstname}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Τηλέφωνο</label>
+                        <input type="text" class="form-control" th:field="*{phoneNumber}">
+                    </div>
+
+                     <div class="mb-3">
+                         <label class="form-label">email</label>
+                         <input type="text" class="form-control" th:field="*{email}">
+                     </div>
+
+                     <div class="mb-3">
+                         <label class="form-label">UserName</label>
+                         <input type="text" class="form-control" th:field="*{username}">
+                     </div>
+
+                     <div class="mb-3" th:if="${showPasswordField}">
+                         <label class="form-label">Password</label>
+                         <input type="text" class="form-control" th:field="*{password}">
+                     </div>
+
+                     <div class="mb-3" th:if="${showRoles}">
+                         <label>Ρόλος :</label>
+                         <select name="roleId" required>
+                             <option th:each="role : ${roles}" th:value="${role.id}">
+                                <span th:switch="${role.name}">
+                                    <span th:case="'ROLE_OWNER'">Ιδιοκτήτης</span>
+                                    <span th:case="'ROLE_TENANT'">Ενοικιαστής</span>
+                                    <span th:case="'ROLE_ADMIN'">Διαχειριστής</span>
+                                    <span th:case="*"
+                                          th:text="${role.name}"></span>
+                                </span>
+                             </option>
+                         </select>
+                     </div>
+                </div>
+
+               <button type="submit" class="btn btn-primary">Αποθήκευση Χρήστη</button>
+            </form>
+        </div>
+    </body>
+</html>

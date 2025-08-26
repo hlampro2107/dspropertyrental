@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+        <title>Properties List</title>
+        <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <h2>Properties for Rent</h2>
+
+           <a class="btn btn-success mb-3" th:href="@{/properties/newProperty}">Στοιχεία Κατοικία</a>
+
+           <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Rental Price</th>
+                    <th>Size (m²)</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="property : ${properties}">
+                    <td th:text="${property.id}"></td>
+                    <td th:text="${property.description}"></td>
+                    <td th:text="${property.address}"></td>
+                    <td th:text="${property.city}"></td>
+                    <td th:text="${property.rentalPrice}"></td>
+                    <td th:text="${property.size}"></td>
+                    <td>
+                        <a class="btn btn-primary btn-sm"
+                           th:href="@{'/properties/edit/' + ${property.id}}">Edit</a>
+
+                        <form th:action="@{'/properties/delete/' + ${property.id}}" method="post" style="display:inline;">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete this property?');">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

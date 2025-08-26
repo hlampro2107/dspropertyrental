@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>Διαχείριση Αγγελιών Ενοικίασης</title>
+        <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <h1>Αγγελίες Ενοικίασης</h1>
+        </div>
+        <div class="d-flex justify-content-end align-items-center mb-3">
+                <span class="me-3">
+                    <strong th:text="${surname}"></strong>
+                    <strong th:text="${firstname}"></strong>,
+                    <span th:switch="${#authentication.principal.authorities[0].authority}">
+                        <span th:case="'ROLE_TENANT'">Ενοικιαστής</span>
+                        <span th:case="'ROLE_OWNER'">Ιδιοκτήτης</span>
+                        <span th:case="*">Χρήστης</span> <!-- default -->
+                    </span>
+                    <form th:action="@{/logout}" method="post" style="display:inline;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm ms-3 mb-2">Αποσύνδεση</button>
+                    </form>
+                </span>
+        </div>
+        <form th:action="@{'/propertyforrent/resultslist'}" method="get" class="mb-3 row g-2">
+
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <input type="text" name="city" class="form-control" placeholder="Πόλη">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="minSquareMeters" class="form-control" placeholder="Ελάχιστα τ.μ.">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="maxSquareMeters" class="form-control" placeholder="Μέγιστα τ.μ.">
+                </div>
+                <div class="col-md d-flex justify-content-end"> <!-- flex container για το κουμπί -->
+                    <a class="btn btn-primary mb-3"
+                       sec:authorize="hasRole('ROLE_TENANT')"
+                       th:href="@{/rentalapplication/tenantList}">
+                        Οι Αιτήσεις μου
+                    </a>
+                </div>
+            </div>
+
+            <fieldset class="border p-3 mb-3">
+                <div class="row g-2">
+                    <div class="col-md-2">
+                        <input type="number" name="minPrice" class="form-control" placeholder="Τιμή από">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="maxPrice" class="form-control" placeholder="Τιμή έως">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="minYear" class="form-control" placeholder="Έτος από">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="maxYear" class="form-control" placeholder="Έτος έως">
+                    </div>
+
+                </div>
+            </fieldset>
+
+            <fieldset class="border p-3 mb-3">
+                <div class="row g-2">
+                    <div class="col-md-2">
+                        <input type="number" name="floor" class="form-control" placeholder="Όροφος">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="bedrooms" class="form-control" placeholder="Υπνοδωμάτια">
+                    </div>
+                    <div class="col-md-2 form-check ms-5">
+                        <input class="form-check-input" type="checkbox" name="parking" value="true">
+                        <label class="form-check-label">Parking</label>
+                    </div>
+                    <div class="col-md-3 form-check">
+                        <input class="form-check-input" type="checkbox" name="autonomousHeating" value="true">
+                        <label class="form-check-label">Αυτόνομη Θέρμανση</label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success">Αναζήτηση</button>
+                <button type="submit" class="btn btn-warning" name="clear" value="true">Καθαρισμός</button>
+            </div>
+        </form>
+
+        <h2>Αποτελέσματα Αναζήτησης</h2>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Πόλη</th>
+                <th>Τετραγωνικά</th>
+                <th>Τιμή</th>
+                <th>Έτος Κατασκευής</th>
+                <th>Υπνοδωμάτια</th>
+                <th>Όροφος</th>
+                <th>Parking</th>
+                <th>Αυτόνομη Θέρμανση</th>
+                <th>Ημερομηνία Καταχώρισης</th>
+                <th>Σημειώσεις Ιδιοκτήτη</th>
+                <th>Ενέργειες</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="propertyforrent : ${propertiesforrent}">
+                <td th:text="${propertyforrent.property.city}"></td>
+                <td th:text="${propertyforrent.property.size}"></td>
+                <td th:text="${propertyforrent.property.rentalPrice}"></td>
+                <td th:text="${propertyforrent.property.yearOfManufacture}"></td>
+                <td th:text="${propertyforrent.property.bedrooms}"></td>
+                <td th:text="${propertyforrent.property.floor}"></td>
+                <td th:text="${propertyforrent.property.parking ? 'Ναι' : 'Όχι'}"></td>
+                <td th:text="${propertyforrent.property.autonomousHeating ? 'Ναι' : 'Όχι'}"></td>
+                <td th:text="${propertyforrent.getListingDate()}"></td>
+                <td th:text="${propertyforrent.getPropertyNotes()}"></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button"
+                                class="btn btn-info btn-sm"
+                                th:onclick="'location.href=\'/propertyforrent/details/' + ${propertyforrent.id} + '\';'"
+                                th:attr="disabled=${appliedPropertyIds.contains(propertyforrent.id) ? 'disabled' : null}">
+                            Πληροφορίες/Αίτηση
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </body>
+</html>

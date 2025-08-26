@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <footer class="mastfoot mt-auto" th:fragment="header">
+          <div class="inner">
+              <div sec:authorize="isAuthenticated()">
+                  <p>
+                      Συνδεδεμένος Χρήστης (username):
+                      <span sec:authentication="name"></span>
+                  </p>
+                  <p>
+                      Ιδιότητα:
+                      <span sec:authentication="principal.authorities"></span>
+                  </p>
+              </div>
+            <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+          </div>
+        </footer>
+    </body>
+</html>

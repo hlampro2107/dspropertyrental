@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <title>Αγγελία</title>
+        <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+        <style>
+            .error { color: red; font-size: 0.9em; }
+        </style>
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <h2>Αγγελία</h2>
+            <!--<form th:action="@{/properties/save}" method="post">-->
+            <form th:action="@{${formAction}}" method="post">
+               <div th:object="${property}">
+                    <input type="hidden" th:field="*{id}"/>
+                    <div class="mb-3">
+                        <label class="form-label">Σύντομες Πληροφορίες</label>
+                        <textarea class="form-control" th:field="*{description}"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Διεύθυνση</label>
+                        <input type="text" class="form-control" th:field="*{address}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Πόλη</label>
+                        <input type="text" class="form-control" th:field="*{city}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Τ.Κ.</label>
+                        <input type="text" class="form-control" th:field="*{postalCode}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Τετραγωνικά (m²)</label>
+                        <input type="number"  class="form-control" th:field="*{size}" step="0.01">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Τιμή (€)</label>
+                        <input type="number" class="form-control" th:field="*{rentalPrice}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Έτος Κατασκευής</label>
+                        <input type="number" class="form-control" th:field="*{yearOfManufacture}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Όροφος</label>
+                        <input type="number" class="form-control" th:field="*{floor}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Υπνοδωμάτια</label>
+                        <input type="number" class="form-control" th:field="*{bedrooms}">
+                    </div>
+
+                    <div class="d-flex align-items-end me-3">
+                        <div class="form-check mb-3 me-3">
+                            <input type="checkbox" class="form-check-input" th:field="*{parking}">
+                            <label class="form-check-label">Parking</label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" th:field="*{autonomousHeating}">
+                            <label class="form-check-label">Αυτόνομη Θέρμανση</label>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div th:object="${propertyForRent}">
+                    <label class="mb-2">Σχόλια:</label>
+                    <textarea class="form-control" th:field="*{propertyNotes}"></textarea>
+                    <input type="hidden" th:field="*{id}"/>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-5">Αποθήκευση Αγγελίας</button>
+            </form>
+        </div>
+    </body>
+</html>

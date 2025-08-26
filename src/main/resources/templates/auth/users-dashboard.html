@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>Χρήστες</title>
+        <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">Διαχείριση Χρηστών</h2>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Αποσύνδεση</button>
+                </form>
+            </div>
+            <a class="btn btn-success mb-5" th:href="@{/user/new}">Δημιουργία Χρήστη</a>
+            <form method="get" action="/user/filteruserrole">
+                <div class="d-flex align-items-end mb-3">
+                    <div class="me-2">
+                        <label class="form-label">Φίλτρο Ρόλων:</label>
+                    </div>
+                    <div class="me-2">
+                        <select name="roleId" class="form-select">
+                            <option value="">Όλοι</option>
+                            <option th:each="role : ${roles}" th:value="${role.id}">
+                                <span th:switch="${role.name}">
+                                    <span th:case="'ROLE_OWNER'">Ιδιοκτήτης</span>
+                                    <span th:case="'ROLE_TENANT'">Ενοικιαστής</span>
+                                    <span th:case="'ROLE_ADMIN'">Διαχειριστής</span>
+                                    <span th:case="*"
+                                          th:text="${role.name}"></span>
+                                </span>
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-info btn-sm">Φίλτρο</button>
+                    </div>
+                </div>
+            </form>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>UserName</th>
+                    <th>email</th>
+                    <th>Επώνυμο</th>
+                    <th>Όνομα</th>
+                    <th>Τηλέφωνο</th>
+                    <th>Ιδιότητα</th>
+                    <th>Ενέργειες</th>
+                </tr>
+                </thead>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.surname}"></td>
+                    <td th:text="${user.firstname}"></td>
+                    <td th:text="${user.phoneNumber}"></td>
+                    <td th:switch="${user.role.name}">
+                        <span th:case="'ROLE_OWNER'">Ιδιοκτήτης</span>
+                        <span th:case="'ROLE_TENANT'">Ενοικιαστής</span>
+                        <span th:case="'ROLE_ADMIN'">Διαχειριστής</span>
+                        <span th:case="*"
+                              th:text="${user.role.name}"></span>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-primary btn-sm me-2" th:href="@{'/user/edit/' + ${user.id}}"
+                               sec:authorize="hasRole('ROLE_ADMIN')">Επεξεργασία</a>
+                            <form th:action="@{'/user/delete/' + ${user.id}}" method="post"
+                                  sec:authorize="hasRole('ROLE_ADMIN')">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Θέλετε να διαγράψετε το χρήστη?');">
+                                    Διαγραφή
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

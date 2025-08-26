@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>Πληροφορίες Ενοικιαζόμενης Κατοικίας</title>
+        <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <h2>Στοιχεία Ακινήτου</h2>
+
+            <div>
+                <p><strong>Σύντομες Πληροφορίες:</strong> <span th:text="${property.description}"></span></p>
+                <p><strong>Διεύθυνση:</strong> <span th:text="${property.address}"></span></p>
+                <p><strong>Πόλη:</strong> <span th:text="${property.city}"></span></p>
+                <p><strong>Τ.Κ.:</strong> <span th:text="${property.postalCode}"></span></p>
+                <p><strong>Τιμή(€):</strong> <span th:text="${property.rentalPrice}"></span></p>
+                <p><strong>Τετραγωνικά (m²):</strong> <span th:text="${property.size}"></span></p>
+                <p><strong>Έτος Κατασκευής:</strong> <span th:text="${property.yearOfManufacture}"></span></p>
+                <p><strong>Όροφος:</strong> <span th:text="${property.floor}"></span></p>
+                <p><strong>Υπνοδωμάτια:</strong> <span th:text="${property.bedrooms}"></span></p>
+                <p><strong>Parking:</strong> <span th:text="${property.parking} ? 'ΝΑΙ' : 'ΟΧΙ'"></span></p>
+                <p><strong>Αυτόνομη Θέρμανση:</strong> <span th:text="${property.autonomousHeating} ? 'ΝΑΙ' : 'ΟΧΙ'"></span></p>
+            </div>
+
+        </div>
+
+        <form id="rentalApplicationComplete"
+              th:action="@{'/rentalapplication/newApplication/' + ${propertyforrent.id}}"
+              method="post"
+              sec:authorize="hasRole('ROLE_TENANT')"
+              th:if="${showCompleteRentalForm}">
+
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+
+            <!-- Το πεδίο rentalNotes μέσα στη φόρμα -->
+            <div id="rentalNotes" class="w-50 ms-5">
+                <label><strong>Σχόλια αίτησης:</strong></label>
+                <textarea class="form-control" name="rentalNotes"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-sm mt-3 ms-5"
+                    onclick="return confirm('Επιβεβαίωση Αίτησης;');">
+                Αίτηση Ενοικίασης
+            </button>
+        </form>
+
+    </body>
+</html>

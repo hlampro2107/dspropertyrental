@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <head>
+        <title> Αγγελίες Ενοικίασης </title>
+        <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <h2>Λίστα Προσφορών Ενοικίασης</h2>
+            <div class="d-flex justify-content-end align-items-center mb-3">
+                <span class="me-3">
+                    <strong th:text="${surname}"></strong>
+                    <strong th:text="${firstname}"></strong>,
+                    <span th:switch="${#authentication.principal.authorities[0].authority}">
+                        <span th:case="'ROLE_TENANT'">Ενοικιαστής</span>
+                        <span th:case="'ROLE_OWNER'">Ιδιοκτήτης</span>
+                        <span th:case="*">Χρήστης</span> <!-- default -->
+                    </span>
+                    <form th:action="@{/logout}" method="post" style="display:inline;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm ms-3 mb-2">Αποσύνδεση</button>
+                    </form>
+                </span>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ημερομηνία Αίτησης</th>
+                    <th>Σημειώσεις Ενδιαφερόμενου</th>
+                    <th>Κατάσταση</th>
+                    <th sec:authorize="hasRole('ROLE_OWNER')">Κωδικός Ενδιαφερόμενου</th>
+                    <th sec:authorize="hasRole('ROLE_TENANT')">Κωδικός Ιδιοκτήτη</th>
+                    <th>Ενέργειες</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="rentalapplication : ${rentalApplications}">
+                    <td th:text="${rentalapplication.id}"></td>
+                    <td th:text="${rentalapplication.getApplicationDate()}"></td>
+                    <td th:text="${rentalapplication.getRentalNotes()}"></td>
+                    <td th:text="${rentalapplication.getStatusText()}"></td>
+                    <td sec:authorize="hasRole('ROLE_OWNER')" th:text="${rentalapplication.getTenant().getId()}"></td>
+                    <td sec:authorize="hasRole('ROLE_TENANT')" th:text="${rentalapplication.getPropertyForRent().getProperty().getOwner().getId()}"></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form th:if="${showApproveRejectButtons}"
+                                  th:action="@{'/rentalapplication/approved/' + ${rentalapplication.id}}" method="post"
+                                  sec:authorize="hasRole('ROLE_OWNER')"
+                                  class="me-2">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-success btn-sm"
+                                        onclick="return confirm('ΕΠΙΒΕΒΑΙΩΣΗ Αίτησης?');"
+                                        th:attr="disabled=${rentalapplication.getStatusText() == 'Αποδοχή'}">
+                                    Αποδοχή
+                                </button>
+                            </form>
+                            <form th:if="${showApproveRejectButtons}"
+                                  th:action="@{'/rentalapplication/rejected/' + ${rentalapplication.id}}" method="post"
+                                  sec:authorize="hasRole('ROLE_OWNER')">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('ΑΠΟΡΡΙΨΗ Αίτησης?');"
+                                        th:attr="disabled=${rentalapplication.getStatusText() == 'Απόρριψη'}">
+                                    Απόρριψη
+                                </button>
+                            </form>
+
+                            <a th:if="${!showApproveRejectButtons}"
+                               class="btn btn-info btn-sm me-3" th:href="@{'/rentalapplication/propertyDetails/' + ${rentalapplication.id}}"
+                               sec:authorize="hasRole('ROLE_TENANT')">Στοιχεία</a>
+
+                            <form th:if="${!showApproveRejectButtons}" th:action="@{'/rentalapplication/cancelApplication/' + ${rentalapplication.id}}" method="post"
+                                  sec:authorize="hasRole('ROLE_TENANT')">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-success btn-sm"
+                                        onclick="return confirm('Are you sure you want to apply?');">
+                                    Ακύρωση
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

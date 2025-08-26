@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Αγγελίες</title>
+        <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div class="container mt-5">
+            <h2 sec:authorize="hasRole('ROLE_OWNER')"> Οι Αγγελίες μου </h2>
+            <h2 sec:authorize="hasRole('ROLE_TENANT')"> Αγγελίες Κατοικιών για Ενοικίαση </h2>
+            <a class="btn btn-success mb-3 mt-5" sec:authorize="hasRole('ROLE_OWNER')" th:href="@{/properties/newProperty}">Νέα Αγγελία</a>
+            <a class="btn btn-success mb-3" sec:authorize="hasRole('ROLE_TENANT')" th:href="@{/rentalapplication/tenantList}">Οι Αιτήσεις μου</a>
+            <div class="d-flex justify-content-end align-items-center mb-3">
+                <span class="me-3">
+                    <strong th:text="${surname}"></strong>
+                    <strong th:text="${firstname}"></strong>,
+                    <span th:switch="${#authentication.principal.authorities[0].authority}">
+                        <span th:case="'ROLE_TENANT'">Ενοικιαστής</span>
+                        <span th:case="'ROLE_OWNER'">Ιδιοκτήτης</span>
+                        <span th:case="*">Χρήστης</span> <!-- default -->
+                    </span>
+                </span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Αποσύνδεση</button>
+                </form>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ημερομηνία Καταχώρισης</th>
+                    <th>Σημειώσεις Ιδιοκτήτη</th>
+                    <th>Κατάσταση</th>
+                    <th class="text-center">Ενέργειες</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="propertyforrent : ${propertiesforrent}">
+                    <td th:text="${propertyforrent.id}"></td>
+                    <td th:text="${propertyforrent.getListingDate()}"></td>
+                    <td th:text="${propertyforrent.getPropertyNotes()}"></td>
+                    <td th:text="${propertyforrent.property.statusText}"></td>
+                    <td>
+                        <div class="btn-group" role="group">
+
+                            <a class="btn btn-primary btn-sm me-2" th:href="@{'/propertyforrent/rentalapplications/' + ${propertyforrent.id}}"
+                               sec:authorize="hasRole('ROLE_OWNER')">Αιτήσεις</a>
+
+                            <a class="btn btn-info btn-sm me-2" th:href="@{'/properties/edit/' + ${propertyforrent.id}}"
+                               sec:authorize="hasRole('ROLE_OWNER')">Επεξεργασία</a>
+
+
+                            <form th:action="@{'/propertyforrent/delete/' + ${propertyforrent.id}}" method="post"
+                                  sec:authorize="hasRole('ROLE_OWNER')">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-danger btn-sm me-2"
+                                        onclick="return confirm('Είστε σίγουροι για τη διαγραφή της καταχώρισης?');">
+                                    Διαγραφή
+                                </button>
+                            </form>
+
+                            <button type="button"
+                                    class="btn btn-info btn-sm"
+                                    th:onclick="'location.href=\'/propertyforrent/details/' + ' ' + ${propertyforrent.id}"
+                                    th:attr="disabled=${appliedPropertyIds.contains(propertyforrent.id) ? 'disabled' : null}"
+                                    sec:authorize="hasRole('ROLE_TENANT')">
+                                Πληροφορίες/Αίτηση
+                            </button>
+                        </div>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

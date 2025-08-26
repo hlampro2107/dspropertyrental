@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{page_layout/layout}">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Register</title>
+    </head>
+    <body style=" background-color: #EDDEA4; color: black;">
+        <div layout:fragment="main-content">
+            <div th:if="${param.error}">
+                Invalid username and password.
+            </div>
+            <h3>Εγγραφή Χρήστη</h3>
+            <form th:action="@{/user/saveUser}" method="post" th:object="${user}">
+                <div class="form-group row">
+                    <label for="surname"> Επώνυμο </label>
+                    <input type="text" class="form-control"  th:field="*{surname}" id="surname"/>
+                </div>
+                <div class="form-group row">
+                    <label for="firstname"> Όνομα </label>
+                    <input type="text" class="form-control" th:field="*{firstname}" id="firstname"/>
+                </div>
+                <div class="form-group row">
+                    <label for="email"> Email</label>
+                    <input type="text" class="form-control"  th:field="*{email}" id="email"/>
+                </div>
+                <div class="form-group row">
+                    <label for="phone_number"> Τηλέφωνο </label>
+                    <input type="text" class="form-control"  th:field="*{phoneNumber}" id="phone_number"/>
+                </div>
+                <div class="form-group row">
+                    <label for="username"> User Name</label>
+                    <input type="text" class="form-control" th:field="*{username}" id="username"/>
+                </div>
+                <div class="form-group row">
+                    <label for="password"> Password </label>
+                    <input type="password" class="form-control"  id="password" th:field="*{password}"/>
+                </div>
+                <div class="mt-3">
+                    <label>Role:</label>
+                    <select name="roleId" required>
+                        <option th:each="role : ${roles}" th:value="${role.id}">
+                                <span th:switch="${role.name}">
+                                    <span th:case="'ROLE_OWNER'">Ιδιοκτήτης</span>
+                                    <span th:case="'ROLE_TENANT'">Ενοικιαστής</span>
+                                    <span th:case="*"
+                                          th:text="${role.name}"></span>
+                                </span>
+                        </option>
+                    </select>
+                </div>
+                <div class="mt-3">
+                    <input type="submit" class="btn btn-primary" value="Εγγραφή"/>
+                </div>
+            </form>
+            <div th:text="${msg}"></div>
+        </div>
+    </body>
+</html>
