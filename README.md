@@ -16,5 +16,5 @@ $>.\mvnw.cmd clean package
 Για την εκτέλεση του προγράμματος εκτελούμε την εντολή :
 
 ```
-$> jjava -jar target\myapp-0.0.1-SNAPSHOT.jar
+$> java -jar target\myapp-0.0.1-SNAPSHOT.jar
 Σε έναν browser δίνουμε τη διεύθυνση //localhost:8080 
